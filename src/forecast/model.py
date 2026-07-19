@@ -8,8 +8,10 @@ slow on CPU and unnecessary for that purpose.
 """
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-import keras
+if TYPE_CHECKING:
+    import keras
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 MODELS_DIR = ROOT / "models"
@@ -26,7 +28,9 @@ class ModelBuilder:
         self.dropout = dropout
         self.learning_rate = learning_rate
 
-    def build(self, lookback: int) -> keras.Model:
+    def build(self, lookback: int) -> "keras.Model":
+        import keras  # deferred so path-only imports of this module skip TensorFlow
+
         model = keras.Sequential(
             [
                 keras.layers.Input(shape=(lookback, 1)),
