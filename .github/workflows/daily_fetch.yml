@@ -2,11 +2,12 @@ name: Daily USD/MXN fetch
 
 on:
   schedule:
-    # 13:30 UTC, weekdays only — Banxico publishes no rate Sat/Sun. At this
-    # hour the API usually returns the previous business day's FIX (it
-    # publishes with a lag); the idempotent append makes that a safe no-op
-    # when the row already exists.
-    - cron: "30 13 * * 1-5"
+    # 20:30 UTC (~14:30 Mexico City time), weekdays only — Banxico publishes
+    # the FIX rate around 12:00-13:00 hrs Mexico City time, so this runs
+    # after that window to catch the same day's rate. No rate is published
+    # Sat/Sun. If Banxico is ever late, the idempotent append makes a
+    # same-day no-op safe; the row is picked up on the next run instead.
+    - cron: "30 20 * * 1-5"
   workflow_dispatch:
 
 permissions:

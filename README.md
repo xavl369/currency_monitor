@@ -9,7 +9,7 @@ fetch (Banxico → fallback) → RatesStore → data/rates.csv → email / analy
 ```
 
 ```
-.github/workflows/   daily_fetch.yml (13:30 UTC weekdays), tests.yml (pytest on push/PR)
+.github/workflows/   daily_fetch.yml (20:30 UTC weekdays), tests.yml (pytest on push/PR)
 data/                historical_seed.csv (frozen), rates.csv (live store, bot-committed daily)
 models/              lstm_v1.keras + lstm_v1.meta.json (trained artifact + frozen scaler/splits)
 src/
@@ -84,7 +84,7 @@ The same names exist as **GitHub Actions secrets** for the daily workflow. Never
 
 ## Automation
 
-- **`daily_fetch.yml`** — 13:30 UTC weekdays (plus manual `workflow_dispatch`): runs the collector with the repo secrets and commits the updated `data/rates.csv` back. Banxico publishes with a lag, so a mid-day fetch often returns the previous business day — the idempotent append makes that a safe no-op, and the email is only sent when a row was actually added.
+- **`daily_fetch.yml`** — 20:30 UTC weekdays (~14:30 Mexico City time, after Banxico's ~12:00-13:00 hrs publish window; plus manual `workflow_dispatch`): runs the collector with the repo secrets and commits the updated `data/rates.csv` back. If Banxico is ever late publishing, the idempotent append makes a same-day no-op safe, and the email is only sent when a row was actually added.
 - **`tests.yml`** — runs the pytest suite on every push and PR, installing only `requirements-dev.txt` (no TensorFlow), so a run costs ~1 minute.
 
 ## Testing
