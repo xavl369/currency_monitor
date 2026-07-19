@@ -33,9 +33,15 @@ jobs:
       - name: Run daily collector
         env:
           BANXICO_TOKEN: ${{ secrets.BANXICO_TOKEN }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: python -m src.collector.run_daily
 
       - name: Commit updated rates.csv
+        # not `success()`: a stored rate must be committed even if the email
+        # step of the collector failed (exit 1 after a successful append)
+        if: ${{ !cancelled() }}
         run: |
           if git diff --quiet -- data/rates.csv; then
             echo "No new rate — nothing to commit."

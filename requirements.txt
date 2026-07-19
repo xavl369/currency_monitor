@@ -1,4 +1,5 @@
 pandas
 plotly
+matplotlib
 requests
 python-dotenv

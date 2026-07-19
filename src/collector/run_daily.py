@@ -1,7 +1,10 @@
 """Daily collector: fetch the latest USD/MXN rate (Banxico primary, market
-API fallback) and append it to data/rates.csv.
+API fallback), append it to data/rates.csv, and email the daily update.
 
-Email alerting is added in Phase 3 — this only fetches and stores.
+The email goes out only when a new row was actually added — no email on
+weekends/holidays or when the fetched date is already stored — and only if
+SMTP is configured (see src/email/notifier.py); otherwise it is skipped
+with a log line, never an error.
 
 Usage:
     python -m src.collector.run_daily
@@ -15,6 +18,7 @@ from dotenv import load_dotenv
 
 from src.collector.fetch_banxico import BanxicoClient
 from src.collector.fetch_fallback import FallbackClient
+from src.email.notifier import EmailNotifier
 from src.storage.db import RatesStore
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -68,10 +72,24 @@ def main() -> int:
         return 1
 
     rel_path = RATES_CSV.relative_to(ROOT)
-    if added:
-        print(f"[{source}] Added {date_iso},{rate} to {rel_path}")
-    else:
-        print(f"[{source}] {date_iso} already present in {rel_path} — no change")
+    if not added:
+        print(f"[{source}] {date_iso} already present in {rel_path} — no change; email skipped")
+        return 0
+
+    print(f"[{source}] Added {date_iso},{rate} to {rel_path}")
+
+    notifier = EmailNotifier.from_env()
+    if notifier is None:
+        print("Email not configured (SMTP_USER/SMTP_PASSWORD/EMAIL_TO) — skipping.", file=sys.stderr)
+        return 0
+
+    try:
+        notifier.send_daily_update(collector.store.read(), source=source)
+    except Exception as e:
+        print(f"Error: rate stored but email failed: {e}", file=sys.stderr)
+        return 1
+
+    print(f"Email sent to {', '.join(notifier.recipients)}")
     return 0
 
 
