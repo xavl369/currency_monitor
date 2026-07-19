@@ -1,0 +1,45 @@
+{
+  "model_file": "lstm_v1.keras",
+  "created_utc": "2026-07-19T07:07:02+00:00",
+  "seed": 42,
+  "units": 64,
+  "dropout": 0.2,
+  "epochs_run": 11,
+  "best_val_loss": 0.8887136578559875,
+  "residual_std_scaled": 0.9427116513252258,
+  "lookback": 60,
+  "val_size": 250,
+  "test_size": 250,
+  "scaler_mean": 0.00021375508190244716,
+  "scaler_std": 0.008433749368715236,
+  "n_observations": 8703,
+  "series_start": "1991-11-13",
+  "series_end": "2026-07-17",
+  "evaluation": {
+    "test_start": "2025-07-21",
+    "test_end": "2026-07-17",
+    "n_test": 250,
+    "order": [
+      1,
+      1,
+      1
+    ],
+    "naive": {
+      "mae": 0.06215160000000013,
+      "rmse": 0.08495471570195506,
+      "mape_pct": 0.34753793283441425
+    },
+    "arima": {
+      "mae": 0.062314182352955515,
+      "rmse": 0.08511963561622034,
+      "mape_pct": 0.3484649784023551
+    },
+    "rmse_ratio_arima_over_naive": 1.0019412685087883,
+    "lstm": {
+      "mae": 0.06251876570693457,
+      "rmse": 0.08543965665595779,
+      "mape_pct": 0.3496135365193157
+    },
+    "rmse_ratio_lstm_over_naive": 1.0057082287898418
+  }
+}
