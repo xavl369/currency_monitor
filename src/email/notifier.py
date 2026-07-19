@@ -32,6 +32,7 @@ import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 RATES_CSV = ROOT / "data" / "rates.csv"
+DASHBOARD_URL = "https://currencymonitor-usd-mxn.streamlit.app/"
 
 # Chart chrome (dataviz reference palette, light surface — email bodies are white).
 SERIES = "#2a78d6"
@@ -154,6 +155,7 @@ class EmailNotifier:
             f"Rate: {rate:.4f} MXN per USD\n"
             f"Change vs {prev_date}: {change:+.4f} ({pct:+.2f}%)\n\n"
             f"Last {len(window)} sessions:\n{table_text}\n\n"
+            f"Dashboard: {DASHBOARD_URL}\n\n"
             f"{source_note}Sent by usd-mxn-monitor."
         )
 
@@ -171,6 +173,7 @@ class EmailNotifier:
   <p style="font-size:14px; color:{INK_SECONDARY}; margin:4px 0 16px;">{arrow} {change:+.4f} ({pct:+.2f}%) vs {prev_date}</p>
   <img src="cid:{cid[1:-1]}" width="520" alt="Line chart of the last {len(window)} sessions, closing at {rate:.4f}" style="max-width:100%; height:auto;"/>
   <table style="border-collapse:collapse; font-size:13px; margin:12px 0 16px;">{table_rows}</table>
+  <p style="font-size:13px; margin:0 0 12px;"><a href="{DASHBOARD_URL}" style="color:{SERIES}; text-decoration:none;">View full dashboard &rarr;</a></p>
   <p style="font-size:12px; color:{INK_MUTED}; margin:0;">{source_note}Sent by usd-mxn-monitor.</p>
 </div>
 """,
