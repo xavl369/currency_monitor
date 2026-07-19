@@ -1,0 +1,8 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+Design Patterns in Python/
+plots/
+CLAUDE.md
+.claude/

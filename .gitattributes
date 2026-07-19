@@ -1,0 +1,4 @@
+# Python's csv module writes CRLF on every platform; pin the working-tree
+# endings to match so a rewrite by the Actions runner diffs only the new row.
+* text=auto
+data/*.csv text eol=crlf

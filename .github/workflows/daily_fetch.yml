@@ -1,0 +1,49 @@
+name: Daily USD/MXN fetch
+
+on:
+  schedule:
+    # 13:30 UTC, weekdays only — Banxico publishes no rate Sat/Sun. At this
+    # hour the API usually returns the previous business day's FIX (it
+    # publishes with a lag); the idempotent append makes that a safe no-op
+    # when the row already exists.
+    - cron: "30 13 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run daily collector
+        env:
+          BANXICO_TOKEN: ${{ secrets.BANXICO_TOKEN }}
+        run: python -m src.collector.run_daily
+
+      - name: Commit updated rates.csv
+        run: |
+          if git diff --quiet -- data/rates.csv; then
+            echo "No new rate — nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/rates.csv
+          git commit -m "chore(data): daily rate update $(date -u +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push
