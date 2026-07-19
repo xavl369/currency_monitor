@@ -101,11 +101,11 @@ The repo is deploy-ready; the one-time setup is interactive:
 
 1. Push `main` to GitHub (private repos are supported).
 2. Go to [share.streamlit.io](https://share.streamlit.io), sign in with GitHub, and grant access to private repositories when prompted.
-3. **Create app → Deploy from GitHub**: repository `xavl369/currency_monitor`, branch `main`, main file path `src/dashboard/app.py` (works as-is — the app adds the repo root to `sys.path` itself).
+3. **Create app → Deploy from GitHub**: repository `xavl369/currency_monitor`, branch `main`, main file path `src/dashboard/app.py` (works as-is — the app adds the repo root to `sys.path` itself). In the **App URL** field, set the custom subdomain to `currencymonitor-usd-mxn`.
 4. In **Advanced settings**, set the Python version to **3.11**.
 5. Secrets: none needed — the dashboard only reads committed files (`data/rates.csv`, `models/lstm_v1.keras`).
 6. Deploy. Every push to `main` — including the daily bot commit of `rates.csv` — redeploys automatically, so the hosted app stays current.
-7. The app URL is public by default; restrict viewers in the app's settings if you want it private.
+7. The app lives at **<https://currencymonitor-usd-mxn.streamlit.app>** — public by default; restrict viewers in the app's settings if you want it private.
 
 **Memory caveat:** Community Cloud gives roughly 1 GB of RAM and `requirements.txt` includes TensorFlow. The dashboard imports TF lazily — only when the Forecast page runs a prediction — so Live/History/Analysis pages are comfortable; opening Forecast may exceed the limit and restart the app. If that happens, swap `tensorflow` for `tensorflow-cpu` in `requirements.txt` (same API, smaller footprint), and if it still doesn't fit, treat the Forecast page as local-only.
 
