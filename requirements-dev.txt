@@ -1,0 +1,8 @@
+# Lean dependency set for the test suite / CI (.github/workflows/tests.yml).
+# Deliberately not "-r requirements.txt": the full set pulls TensorFlow,
+# which is huge and irrelevant to these tests. matplotlib is needed because
+# importing src.collector.run_daily pulls in src.email.notifier.
+pytest
+requests
+python-dotenv
+matplotlib
