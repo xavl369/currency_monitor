@@ -1,5 +1,7 @@
 pandas
+numpy
 plotly
 matplotlib
 requests
 python-dotenv
+statsmodels
